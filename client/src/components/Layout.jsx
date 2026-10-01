@@ -8,6 +8,7 @@ export default function Layout() {
   const { user, logout } = useAuth();
   const { pathname } = useLocation();
   const [pending, setPending] = useState(0);
+  const [unread, setUnread] = useState(0); // unread cheers & nudges
 
   useEffect(() => {
     api
@@ -16,10 +17,27 @@ export default function Layout() {
       .catch(() => {});
   }, [pathname]);
 
+    // Unread cheers/nudges badge: refresh on navigation, every 60s, and when the Activity page marks them read.
+  useEffect(() => {
+    const load = () =>
+      api
+        .get('/cheers/unread-count')
+        .then((r) => setUnread(r.data.unread))
+        .catch(() => {});
+    load();
+    const t = setInterval(load, 60000);
+    window.addEventListener('notifications:changed', load);
+    return () => {
+      clearInterval(t);
+      window.removeEventListener('notifications:changed', load);
+    };
+  }, [pathname]);
+
   const links = [
     { to: '/', label: 'Dashboard', icon: <IconHome />, end: true },
     { to: '/tracker', label: 'Tracker', icon: <IconList /> },
     { to: '/friends', label: 'Friends', icon: <IconUsers />, badge: pending },
+    { to: '/activity', label: 'Activity', icon: <IconActivity />, badge: unread },
   ];
 
   return (

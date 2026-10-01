@@ -12,3 +12,6 @@ export const IconX = (p) => <svg {...base} {...p}><path d="M6 6l12 12M18 6L6 18"
 export const IconUserPlus = (p) => <svg {...base} {...p}><circle cx="10" cy="8" r="3.5" /><path d="M3.5 20c.6-3.4 3-5.5 6.5-5.5 1.2 0 2.3.2 3.2.7M18 9v6M15 12h6" /></svg>;
 export const IconExternal = (p) => <svg {...base} width="12" height="12" {...p}><path d="M14 5h5v5M19 5l-8 8M18 14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h4" /></svg>;
 export const IconTrash = (p) => <svg {...base} {...p}><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-12M9 7V4h6v3" /></svg>;
+export const IconActivity = (p) => <svg {...base} {...p}><path d="M3 12h4l3-8 4 16 3-8h4" /></svg>;
+export const IconHeart = (p) => <svg {...base} {...p}><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.4a4.3 4.3 0 0 1 7.5 2.4C19.5 15.4 12 20 12 20z" /></svg>;
+export const IconZap = (p) => <svg {...base} {...p}><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z" /></svg>;

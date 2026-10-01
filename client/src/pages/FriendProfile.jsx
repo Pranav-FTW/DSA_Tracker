@@ -4,6 +4,7 @@ import api, { errorMessage } from '../api';
 import { useToast } from '../context/ToastContext';
 import { ProgressRing, Bar, CheckBox, SourceBadge } from '../components/Progress';
 import { IconChevron } from '../components/Icons';
+import CheerButtons from '../components/CheerButtons';
 import { pct, timeAgo } from '../utils/stats';
 
 export default function FriendProfile() {
@@ -74,7 +75,10 @@ export default function FriendProfile() {
             <p className="muted">{lastSolved ? `Last solved ${timeAgo(lastSolved)}` : 'Nothing solved yet'}</p>
           </div>
         </div>
-        <button className="btn btn-danger btn-sm" onClick={removeFriend}>Remove friend</button>
+        <div className="row gap wrap">
+          <CheerButtons username={username} />
+          <button className="btn btn-danger btn-sm" onClick={removeFriend}>Remove friend</button>
+        </div>
       </header>
 
       <div className="grid-top">

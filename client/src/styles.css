@@ -267,3 +267,22 @@ a.board-row:hover { background: var(--panel-2); }
   .auth-intro .brand { margin-bottom: 4px; }
   .auth-points { display: none; }
 }
+
+/* ---------- Activity feed, cheers & nudges ---------- */
+.tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--line); }
+.tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 10px 14px; color: var(--muted); font-weight: 700; display: inline-flex; align-items: center; gap: 8px; }
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--text); border-bottom-color: var(--accent); }
+.nav-badge.inline { margin: 0; }
+
+.feed { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 4px; }
+.feed li { display: flex; align-items: center; gap: 12px; padding: 10px 8px; border-radius: 10px; flex-wrap: wrap; }
+.feed li:hover { background: var(--panel-2); }
+.feed li.is-new { background: rgba(143,162,255,.09); }
+
+.cheer-actions { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+.cheer-actions .btn { display: inline-flex; align-items: center; gap: 6px; }
+
+.notif-icon { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; }
+.notif-icon.cheer { background: rgba(255,143,143,.16); color: var(--danger); }
+.notif-icon.nudge { background: rgba(240,184,102,.16); color: var(--neet); }
