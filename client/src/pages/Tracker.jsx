@@ -33,7 +33,7 @@ export default function Tracker() {
       if (source === 'both' && q.source !== 'Both') return false;
       if (status === 'done' && !q.done) return false;
       if (status === 'todo' && q.done) return false;
-      if (status === 'notes' && !q.note) return false;
+      if (status === 'notes' && !q.note && !q.imageCount) return false;
       if (s && !q.title.toLowerCase().includes(s) && !q.note.toLowerCase().includes(s)) return false;
       return true;
     });
@@ -133,8 +133,9 @@ export default function Tracker() {
                     <div className="qmain">
                       <div className="q-title">{q.title}</div>
                       {q.info && <div className="muted small">{q.info}</div>}
-                      {q.note && (
+                      {(q.note || q.imageCount > 0) && (
                         <button className="note-preview" onClick={() => setNoteFor(q)} title="Edit note">
+                          {q.imageCount > 0 && <span>📷 {q.imageCount} photo{q.imageCount > 1 ? 's' : ''}{q.note ? ' · ' : ''}</span>}
                           {q.note}
                         </button>
                       )}
@@ -147,7 +148,7 @@ export default function Tracker() {
                         </a>
                       ))}
                     </div>
-                    <button className={`icon-btn note-btn ${q.note ? 'has-note' : ''}`} onClick={() => setNoteFor(q)} aria-label={q.note ? 'Edit note' : 'Add note'} title={q.note ? 'Edit note' : 'Add note'}>
+                    <button className={`icon-btn note-btn ${q.note || q.imageCount > 0 ? 'has-note' : ''}`} onClick={() => setNoteFor(q)} aria-label={q.note || q.imageCount > 0 ? 'Edit note' : 'Add note'} title={q.note || q.imageCount > 0 ? 'Edit note' : 'Add note'}>
                       <IconNote />
                     </button>
                   </li>
@@ -162,6 +163,7 @@ export default function Tracker() {
         <NoteModal
           question={questions.find((q) => q._id === noteFor._id) || noteFor}
           onSave={saveNote}
+          onImageCount={setImageCount}  
           onClose={() => setNoteFor(null)}
         />
       )}

@@ -65,9 +65,12 @@ export function TrackerProvider({ children }) {
     [patch, toast]
   );
 
+  // Called by the note modal after a photo is added or deleted, so the tracker icon updates instantly.
+  const setImageCount = useCallback((id, n) => patch(id, { imageCount: n }), [patch]);  
+
   const stats = useMemo(() => computeStats(questions), [questions]);
 
   return (
-    <TrackerContext.Provider value={{ questions, stats, loading, error, toggleDone, saveNote }}>{children}</TrackerContext.Provider>
+    <TrackerContext.Provider value={{ questions, stats, loading, error, toggleDone, saveNote, setImageCount }}>{children}</TrackerContext.Provider>
   );
 }
