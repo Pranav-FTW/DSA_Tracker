@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Question = require('../models/Question');
 const Progress = require('../models/Progress');
+const NoteImage = require('../models/NoteImage');
 const auth = require('../middleware/auth');
 
 const router = express.Router();
@@ -10,16 +11,18 @@ router.use(auth);
 // All questions merged with the logged-in user's progress and notes.
 router.get('/', async (req, res, next) => {
   try {
-    const [questions, progress] = await Promise.all([
+    const [questions, progress, imageCounts] = await Promise.all([
       Question.find().sort({ number: 1 }).lean(),
       Progress.find({ user: req.user._id }).lean(),
+      NoteImage.aggregate([{ $match: { user: req.user._id } }, { $group: { _id: '$question', n: { $sum: 1 } } }]),
     ]);
     const byQ = new Map(progress.map((p) => [String(p.question), p]));
+    const imgByQ = new Map(imageCounts.map((c) => [String(c._id), c.n]));
 
     res.json({
       questions: questions.map((q) => {
         const p = byQ.get(String(q._id));
-        return { ...q, done: !!p?.done, completedAt: p?.completedAt || null, note: p?.note || '' };
+        return { ...q, done: !!p?.done, completedAt: p?.completedAt || null, note: p?.note || '', imageCount: imgByQ.get(String(q._id)) || 0};
       }),
     });
   } catch (err) {

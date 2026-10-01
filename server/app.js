@@ -29,6 +29,7 @@ const withDB = async (_req, _res, next) => {
 app.use('/api/auth', withDB, require('./routes/auth'));
 app.use('/api/tracker', withDB, require('./routes/tracker'));
 app.use('/api/friends', withDB, require('./routes/friends'));
+app.use('/api/note-images', withDB, require('./routes/noteImages'));
 app.use('/api/activity', withDB, require('./routes/activity'));
 app.use('/api/cheers', withDB, require('./routes/cheers'));
 app.use('/api', (_req, res) => res.status(404).json({ message: 'Route not found.' }));
