@@ -1,0 +1,17 @@
+{
+  "name": "dsa-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MERN DSA tracker with notes, progress and friends",
+  "scripts": {
+    "setup": "npm install && npm install --prefix server && npm install --prefix client",
+    "dev": "concurrently -n api,web -c blue,green \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "build": "npm install --prefix server && npm install --prefix client && npm run build --prefix client",
+    "start": "npm start --prefix server",
+    "seed": "npm run seed --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  },
+  "engines": { "node": ">=18" }
+}
