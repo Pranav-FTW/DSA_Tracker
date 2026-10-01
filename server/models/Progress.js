@@ -14,5 +14,7 @@ const progressSchema = new mongoose.Schema(
 
 progressSchema.index({ user: 1, question: 1 }, { unique: true });
 progressSchema.index({ user: 1, done: 1 });
+progressSchema.index({ user: 1, done: 1, completedAt: -1 }); // activity feed
+
 
 module.exports = mongoose.model('Progress', progressSchema);
