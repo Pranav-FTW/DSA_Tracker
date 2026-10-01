@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api';
-import { IconHome, IconList, IconUsers, IconLogout, IconCheck } from './Icons';
+import { IconHome, IconList, IconUsers, IconLogout, IconCheck, IconActivity} from './Icons';
 
 export default function Layout() {
   const { user, logout } = useAuth();
