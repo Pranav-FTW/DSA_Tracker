@@ -13,7 +13,7 @@ const LINKS = [
 ];
 
 export default function Tracker() {
-  const { questions, stats, loading, error, toggleDone, saveNote } = useTracker();
+  const { questions, stats, loading, error, toggleDone, saveNote, setImageCount } = useTracker();
   const [params, setParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [source, setSource] = useState('all');
