@@ -16,3 +16,4 @@ export const IconActivity = (p) => <svg {...base} {...p}><path d="M3 12h4l3-8 4 
 export const IconHeart = (p) => <svg {...base} {...p}><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.4a4.3 4.3 0 0 1 7.5 2.4C19.5 15.4 12 20 12 20z" /></svg>;
 export const IconZap = (p) => <svg {...base} {...p}><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z" /></svg>;
 export const IconImage = (p) => <svg {...base} {...p}><rect x="3.5" y="4.5" width="17" height="15" rx="2" /><circle cx="9" cy="10" r="1.6" /><path d="M20.5 16l-5-5-8 8" /></svg>;
+export const IconRepeat = (p) => <svg {...base} {...p}><path d="M17 3l3 3-3 3M4 11V9a3 3 0 0 1 3-3h13M7 21l-3-3 3-3M20 13v2a3 3 0 0 1-3 3H4" /></svg>;

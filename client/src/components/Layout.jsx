@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api';
-import { IconHome, IconList, IconUsers, IconLogout, IconCheck, IconActivity} from './Icons';
+import { useTracker } from '../context/TrackerContext';
+import { isDue } from '../utils/revise';
+import { IconHome, IconList, IconUsers, IconActivity, IconRepeat, IconLogout, IconCheck } from './Icons';
 
 export default function Layout() {
   const { user, logout } = useAuth();
   const { pathname } = useLocation();
+  const { questions } = useTracker();
+  const dueCount = questions.filter(isDue).length; // questions to revise today
   const [pending, setPending] = useState(0);
   const [unread, setUnread] = useState(0); // unread cheers & nudges
 
@@ -17,7 +21,7 @@ export default function Layout() {
       .catch(() => {});
   }, [pathname]);
 
-    // Unread cheers/nudges badge: refresh on navigation, every 60s, and when the Activity page marks them read.
+  // Unread cheers/nudges badge: refresh on navigation, every 60s, and when the Activity page marks them read.
   useEffect(() => {
     const load = () =>
       api
@@ -36,6 +40,7 @@ export default function Layout() {
   const links = [
     { to: '/', label: 'Dashboard', icon: <IconHome />, end: true },
     { to: '/tracker', label: 'Tracker', icon: <IconList /> },
+    { to: '/revise', label: 'Revise', icon: <IconRepeat />, badge: dueCount },
     { to: '/friends', label: 'Friends', icon: <IconUsers />, badge: pending },
     { to: '/activity', label: 'Activity', icon: <IconActivity />, badge: unread },
   ];

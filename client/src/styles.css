@@ -300,3 +300,17 @@ a.board-row:hover { background: var(--panel-2); }
 .lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; background: #fff; }
 .lightbox-x { position: absolute; top: 14px; right: 14px; background: rgba(38,45,63,.9); }
 .note-preview.photos-only { color: var(--neet); }
+
+/* ---------- Revision / spaced repetition ---------- */
+.revise-chip { cursor: pointer; font-family: inherit; }
+.revise-chip.on { background: rgba(143,162,255,.16); border-color: var(--accent); color: var(--accent); }
+.rev-tag { display: inline-flex; align-items: center; gap: 5px; margin-top: 4px; font-size: 12px; font-weight: 700; color: var(--accent); }
+
+.rev-h { margin: 0 0 8px; font-size: 17px; }
+.rev-list { list-style: none; margin: 0; padding: 0; display: grid; }
+.rev-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding: 12px 4px; border-bottom: 1px solid rgba(58,68,96,.55); }
+.rev-row:last-child { border-bottom: 0; }
+.rev-main { min-width: 0; flex: 1 1 260px; display: grid; gap: 4px; }
+.rev-links { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.rev-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.rev-overdue { color: var(--neet); font-weight: 700; }

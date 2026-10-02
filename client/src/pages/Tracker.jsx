@@ -3,7 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { useTracker } from '../context/TrackerContext';
 import NoteModal from '../components/NoteModal';
 import { Bar, CheckBox, SourceBadge } from '../components/Progress';
-import { IconChevron, IconNote, IconSearch } from '../components/Icons';
+import { IconChevron, IconNote, IconRepeat, IconSearch } from '../components/Icons';
+import { dueLabel } from '../utils/revise';
 
 const LINKS = [
   ['leetcode', 'LeetCode'],
@@ -13,7 +14,7 @@ const LINKS = [
 ];
 
 export default function Tracker() {
-  const { questions, stats, loading, error, toggleDone, saveNote, setImageCount } = useTracker();
+  const { questions, stats, loading, error, toggleDone, saveNote, setImageCount, toggleRevisit } = useTracker();
   const [params, setParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [source, setSource] = useState('all');
@@ -34,6 +35,7 @@ export default function Tracker() {
       if (status === 'done' && !q.done) return false;
       if (status === 'todo' && q.done) return false;
       if (status === 'notes' && !q.note && !q.imageCount) return false;
+      if (status === 'revising' && !q.revisit) return false;
       if (s && !q.title.toLowerCase().includes(s) && !q.note.toLowerCase().includes(s)) return false;
       return true;
     });
@@ -101,6 +103,7 @@ export default function Tracker() {
           <option value="todo">Not solved</option>
           <option value="done">Solved</option>
           <option value="notes">Has notes</option>
+          <option value="revising">In revision</option>
         </select>
         {filtersActive && <button className="btn btn-ghost" onClick={reset}>Clear filters</button>}
       </div>
@@ -133,6 +136,7 @@ export default function Tracker() {
                     <div className="qmain">
                       <div className="q-title">{q.title}</div>
                       {q.info && <div className="muted small">{q.info}</div>}
+                      {q.revisit && <div className="rev-tag"><IconRepeat width={13} height={13} /> {dueLabel(q)}</div>}
                       {(q.note || q.imageCount > 0) && (
                         <button className="note-preview" onClick={() => setNoteFor(q)} title="Edit note">
                           {q.imageCount > 0 && <span>📷 {q.imageCount} photo{q.imageCount > 1 ? 's' : ''}{q.note ? ' · ' : ''}</span>}
@@ -142,6 +146,16 @@ export default function Tracker() {
                     </div>
                     <SourceBadge source={q.source} />
                     <div className="qlinks">
+                      {q.done && (
+                        <button
+                          className={`chip revise-chip ${q.revisit ? 'on' : ''}`}
+                          onClick={() => toggleRevisit(q)}
+                          aria-pressed={q.revisit}
+                          title={q.revisit ? 'Remove from revision' : 'Add to revision (reviews after 3, 7 and 30 days)'}
+                        >
+                          <IconRepeat width={13} height={13} /> {q.revisit ? 'Revising' : 'Revise'}
+                        </button>
+                      )}
                       {LINKS.filter(([k]) => q[k]).map(([k, label]) => (
                         <a key={k} href={q[k]} target="_blank" rel="noreferrer noopener" className="chip" title={`Open ${label} in a new tab`}>
                           {label}
@@ -163,7 +177,7 @@ export default function Tracker() {
         <NoteModal
           question={questions.find((q) => q._id === noteFor._id) || noteFor}
           onSave={saveNote}
-          onImageCount={setImageCount}  
+          onImageCount={setImageCount}
           onClose={() => setNoteFor(null)}
         />
       )}

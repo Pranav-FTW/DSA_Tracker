@@ -7,6 +7,7 @@ import Tracker from './pages/Tracker';
 import Friends from './pages/Friends';
 import FriendProfile from './pages/FriendProfile';
 import Activity from './pages/Activity';
+import Revise from './pages/Revise';  
 
 function Private({ children }) {
   const { user, booting } = useAuth();
@@ -31,6 +32,7 @@ export default function App() {
         <Route path="friends" element={<Friends />} />
         <Route path="friends/:username" element={<FriendProfile />} />
         <Route path="activity" element={<Activity />} />
+        <Route path="revise" element={<Revise />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
