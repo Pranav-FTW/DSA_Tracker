@@ -314,3 +314,20 @@ a.board-row:hover { background: var(--panel-2); }
 .rev-links { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
 .rev-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .rev-overdue { color: var(--neet); font-weight: 700; }
+
+/* ---------- Icon link buttons (LeetCode / NeetCode / Striver / Video / Revise) ---------- */
+.qlinks { align-items: center; gap: 6px; }
+.link-ico { width: 32px; height: 32px; padding: 0; display: inline-grid; place-items: center; flex: none; border-radius: 9px; border: 1px solid var(--line); background: var(--panel-2); color: var(--muted); font-family: inherit; cursor: pointer; transition: transform .12s, border-color .12s, background .12s, color .12s; }
+.link-ico:hover { transform: translateY(-1px); }
+.link-ico .mono { font-weight: 800; font-size: 14px; line-height: 1; }
+.link-ico.lc { color: var(--text); }
+.link-ico.lc:hover { border-color: var(--text); }
+.link-ico.nc { color: var(--neet); background: rgba(240,184,102,.1); border-color: rgba(240,184,102,.35); }
+.link-ico.nc:hover { border-color: var(--neet); background: rgba(240,184,102,.2); }
+.link-ico.sv { color: var(--strv); background: rgba(143,162,255,.1); border-color: rgba(143,162,255,.35); }
+.link-ico.sv:hover { border-color: var(--strv); background: rgba(143,162,255,.2); }
+.link-ico.yt { color: var(--danger); background: rgba(255,143,143,.1); border-color: rgba(255,143,143,.35); }
+.link-ico.yt:hover { border-color: var(--danger); background: rgba(255,143,143,.2); }
+.link-ico.revise:hover { border-color: var(--accent); color: var(--accent); }
+.link-ico.revise.on { color: var(--accent); border-color: var(--accent); background: rgba(143,162,255,.18); }
+.qsep { width: 1px; height: 20px; background: var(--line); margin: 0 2px; flex: none; }

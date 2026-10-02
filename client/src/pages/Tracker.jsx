@@ -5,13 +5,7 @@ import NoteModal from '../components/NoteModal';
 import { Bar, CheckBox, SourceBadge } from '../components/Progress';
 import { IconChevron, IconNote, IconRepeat, IconSearch } from '../components/Icons';
 import { dueLabel } from '../utils/revise';
-
-const LINKS = [
-  ['leetcode', 'LeetCode'],
-  ['neetcode', 'NeetCode'],
-  ['striver', 'Striver'],
-  ['youtube', 'Video'],
-];
+import QuestionLinks from '../components/QuestionLinks';
 
 export default function Tracker() {
   const { questions, stats, loading, error, toggleDone, saveNote, setImageCount, toggleRevisit } = useTracker();
@@ -147,20 +141,20 @@ export default function Tracker() {
                     <SourceBadge source={q.source} />
                     <div className="qlinks">
                       {q.done && (
-                        <button
-                          className={`chip revise-chip ${q.revisit ? 'on' : ''}`}
-                          onClick={() => toggleRevisit(q)}
-                          aria-pressed={q.revisit}
-                          title={q.revisit ? 'Remove from revision' : 'Add to revision (reviews after 3, 7 and 30 days)'}
-                        >
-                          <IconRepeat width={13} height={13} /> {q.revisit ? 'Revising' : 'Revise'}
-                        </button>
+                        <>
+                          <button
+                            className={`link-ico revise ${q.revisit ? 'on' : ''}`}
+                            onClick={() => toggleRevisit(q)}
+                            aria-pressed={q.revisit}
+                            aria-label={q.revisit ? 'Remove from revision' : 'Add to revision'}
+                            title={q.revisit ? 'In revision. Click to remove' : 'Add to revision (reviews after 3, 7 and 30 days)'}
+                          >
+                            <IconRepeat width={15} height={15} />
+                          </button>
+                          <span className="qsep" aria-hidden="true" />
+                        </>
                       )}
-                      {LINKS.filter(([k]) => q[k]).map(([k, label]) => (
-                        <a key={k} href={q[k]} target="_blank" rel="noreferrer noopener" className="chip" title={`Open ${label} in a new tab`}>
-                          {label}
-                        </a>
-                      ))}
+                      <QuestionLinks q={q} />
                     </div>
                     <button className={`icon-btn note-btn ${q.note || q.imageCount > 0 ? 'has-note' : ''}`} onClick={() => setNoteFor(q)} aria-label={q.note || q.imageCount > 0 ? 'Edit note' : 'Add note'} title={q.note || q.imageCount > 0 ? 'Edit note' : 'Add note'}>
                       <IconNote />

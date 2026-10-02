@@ -3,14 +3,8 @@ import { Link } from 'react-router-dom';
 import { useTracker } from '../context/TrackerContext';
 import NoteModal from '../components/NoteModal';
 import { IconNote } from '../components/Icons';
+import QuestionLinks from '../components/QuestionLinks';
 import { REVIEW_DAYS, dueLabel, isDue, reviewLabel } from '../utils/revise';
-
-const LINKS = [
-  ['leetcode', 'LeetCode'],
-  ['neetcode', 'NeetCode'],
-  ['striver', 'Striver'],
-  ['youtube', 'Video'],
-];
 
 export default function Revise() {
   const { questions, loading, error, reviewQuestion, toggleRevisit, saveNote, setImageCount } = useTracker();
@@ -61,9 +55,7 @@ export default function Revise() {
                     {q.pattern} · {reviewLabel(q)} · <span className={dueLabel(q).startsWith('Overdue') ? 'rev-overdue' : ''}>{dueLabel(q)}</span>
                   </div>
                   <div className="rev-links">
-                    {LINKS.filter(([k]) => q[k]).map(([k, label]) => (
-                      <a key={k} href={q[k]} target="_blank" rel="noreferrer noopener" className="chip">{label}</a>
-                    ))}
+                    <QuestionLinks q={q} />
                     <button className="chip" onClick={() => setNoteFor(q)}>
                       <IconNote width={13} height={13} /> My notes{q.imageCount > 0 ? ` · ${q.imageCount} 📷` : ''}
                     </button>
