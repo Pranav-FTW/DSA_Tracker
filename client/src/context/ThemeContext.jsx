@@ -18,9 +18,20 @@ export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(read);
 
   // Keep <html data-theme> and the browser UI colour in sync.
+  // Transitions are paused for two frames around the switch so the page repaints once, instantly (no lag on long lists).
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
+    const root = document.documentElement;
+    root.classList.add('theme-switching');
+    root.setAttribute('data-theme', theme);
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', COLORS[theme]);
+    let id2;
+    const id1 = requestAnimationFrame(() => {
+      id2 = requestAnimationFrame(() => root.classList.remove('theme-switching'));
+    });
+    return () => {
+      cancelAnimationFrame(id1);
+      cancelAnimationFrame(id2);
+    };
   }, [theme]);
 
   // Follow the system setting until the user picks a theme themselves.
