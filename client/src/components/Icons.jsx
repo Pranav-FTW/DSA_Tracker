@@ -19,3 +19,5 @@ export const IconImage = (p) => <svg {...base} {...p}><rect x="3.5" y="4.5" widt
 export const IconRepeat = (p) => <svg {...base} {...p}><path d="M17 3l3 3-3 3M4 11V9a3 3 0 0 1 3-3h13M7 21l-3-3 3-3M20 13v2a3 3 0 0 1-3 3H4" /></svg>;
 export const IconCode = (p) => <svg {...base} {...p}><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16" /></svg>;
 export const IconPlay = (p) => <svg {...base} {...p}><path d="M7 4.5v15l12-7.5z" fill="currentColor" /></svg>;
+export const IconSun = (p) => <svg {...base} {...p}><circle cx="12" cy="12" r="4" /><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4" /></svg>;
+export const IconMoon = (p) => <svg {...base} {...p}><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z" /></svg>;

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { errorMessage } from '../api';
 import { IconCheck } from '../components/Icons';
+import ThemeToggle from '../components/ThemeToggle';
 
 export default function AuthPage({ mode }) {
   const { login, register } = useAuth();
@@ -28,6 +29,7 @@ export default function AuthPage({ mode }) {
 
   return (
     <div className="auth">
+      <ThemeToggle className="theme-fab" />
       <section className="auth-intro">
         <div className="brand">
           <span className="brand-mark"><IconCheck width={16} height={16} strokeWidth={3} /></span>
