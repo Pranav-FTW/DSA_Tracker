@@ -69,7 +69,7 @@ router.patch('/:questionId', async (req, res, next) => {
       if (!req.body.done) Object.assign(set, CLEAR_REVISIT); // un-solving a question removes it from revision
     }
     if (typeof req.body.note === 'string') {
-      if (req.body.note.length > 2000) return res.status(400).json({ message: 'Notes are limited to 2000 characters.' });
+      if (req.body.note.length > 10000) return res.status(400).json({ message: 'Notes are limited to 10,000 characters.' });
       set.note = req.body.note.trim();
     }
     if (typeof req.body.revisit === 'boolean') {

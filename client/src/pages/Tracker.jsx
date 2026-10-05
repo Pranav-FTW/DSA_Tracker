@@ -5,6 +5,7 @@ import NoteModal from '../components/NoteModal';
 import { Bar, CheckBox, SourceBadge } from '../components/Progress';
 import { IconChevron, IconNote, IconRepeat, IconSearch } from '../components/Icons';
 import { dueLabel } from '../utils/revise';
+import { stripMarkdown, looksLikeMarkdown } from '../utils/markdown';
 import QuestionLinks from '../components/QuestionLinks';
 
 export default function Tracker() {
@@ -132,9 +133,10 @@ export default function Tracker() {
                       {q.info && <div className="muted small">{q.info}</div>}
                       {q.revisit && <div className="rev-tag"><IconRepeat width={13} height={13} /> {dueLabel(q)}</div>}
                       {(q.note || q.imageCount > 0) && (
-                        <button className="note-preview" onClick={() => setNoteFor(q)} title="Edit note">
+                        <button className="note-preview" onClick={() => setNoteFor(q)} title="View / edit note">
                           {q.imageCount > 0 && <span>📷 {q.imageCount} photo{q.imageCount > 1 ? 's' : ''}{q.note ? ' · ' : ''}</span>}
-                          {q.note}
+                          {looksLikeMarkdown(q.note) && <span className="md-badge-pill">MD</span>}
+                          {stripMarkdown(q.note, 100)}
                         </button>
                       )}
                     </div>

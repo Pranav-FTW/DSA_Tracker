@@ -7,7 +7,7 @@ const progressSchema = new mongoose.Schema(
     question: { type: mongoose.Schema.Types.ObjectId, ref: 'Question', required: true },
     done: { type: Boolean, default: false },
     completedAt: { type: Date, default: null },
-    note: { type: String, default: '', maxlength: 2000 },
+    note: { type: String, default: '', maxlength: 10000 },
     // Spaced repetition: a solved question can be flagged for revision.
     revisit: { type: Boolean, default: false },
     revisitStep: { type: Number, default: 0, min: 0, max: 3 }, // reviews completed so far (0-2 while active)
