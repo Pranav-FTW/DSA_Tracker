@@ -7,7 +7,7 @@ import QuestionLinks from '../components/QuestionLinks';
 import { REVIEW_DAYS, dueLabel, isDue, reviewLabel } from '../utils/revise';
 
 export default function Revise() {
-  const { questions, loading, error, reviewQuestion, toggleRevisit, saveNote, setImageCount } = useTracker();
+  const { allQuestions: questions, loading, error, reviewQuestion, toggleRevisit, saveNote, setImageCount } = useTracker();
   const [busyId, setBusyId] = useState(null);
   const [noteFor, setNoteFor] = useState(null);
 

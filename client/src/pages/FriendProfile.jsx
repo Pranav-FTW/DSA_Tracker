@@ -2,15 +2,19 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import api, { errorMessage } from '../api';
 import { useToast } from '../context/ToastContext';
-import { ProgressRing, Bar, CheckBox, SourceBadge } from '../components/Progress';
+import { ProgressRing, Bar, CheckBox } from '../components/Progress';
+import BreakdownCard from '../components/BreakdownCard';
+import QuestionBadge from '../components/QuestionBadge';
+import { useTracker } from '../context/TrackerContext';
 import { IconChevron } from '../components/Icons';
 import CheerButtons from '../components/CheerButtons';
-import { pct, timeAgo } from '../utils/stats';
+import { isMultiSource, timeAgo } from '../utils/stats';
 
 export default function FriendProfile() {
   const { username } = useParams();
   const navigate = useNavigate();
   const toast = useToast();
+  const { sheet, sheetId } = useTracker();
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [open, setOpen] = useState(() => new Set());
@@ -19,10 +23,10 @@ export default function FriendProfile() {
     setData(null);
     setError('');
     api
-      .get(`/friends/${username}/progress`)
+      .get(`/friends/${username}/progress`, { params: { sheet: sheetId } })
       .then((r) => setData(r.data))
       .catch((e) => setError(errorMessage(e, 'Could not load progress.')));
-  }, [username]);
+  }, [username, sheetId]);
 
   const byPattern = useMemo(() => {
     const m = new Map();
@@ -93,28 +97,11 @@ export default function FriendProfile() {
             </dl>
           </div>
         </section>
-        <section className="card">
-          <h3>By source list</h3>
-          <div className="source-list">
-            {[
-              ['NeetCode 150', stats.lists.neetcode, 'neetcode'],
-              ['Striver Master DSA', stats.lists.striver, 'striver'],
-              ['Shared by both', stats.bySource.Both, 'both'],
-            ].map(([label, s, tone]) => (
-              <div key={label} className="source-row">
-                <div className="row between">
-                  <span>{label}</span>
-                  <span className="muted small">{s.done} / {s.total} · {pct(s.done, s.total)}%</span>
-                </div>
-                <Bar done={s.done} total={s.total} tone={tone} />
-              </div>
-            ))}
-          </div>
-        </section>
+        <BreakdownCard stats={stats} questions={data.questions} />
       </div>
 
       <section className="card">
-        <h3>Patterns</h3>
+        <h3>Patterns{sheet ? ` · ${sheet.short}` : ''}</h3>
         <div className="friend-patterns">
           {stats.byPattern.map((p) => {
             const isOpen = open.has(p.pattern);
@@ -132,7 +119,7 @@ export default function FriendProfile() {
                       <li key={q._id} className={q.done ? '' : 'dim'}>
                         <CheckBox checked={q.done} readOnly label={`${q.title}: ${q.done ? 'solved' : 'not solved'}`} />
                         <div className="grow q-title">{q.title}</div>
-                        <SourceBadge source={q.source} />
+                        <QuestionBadge q={q} multi={isMultiSource(stats)} />
                         {q.done && <span className="muted small nowrap">{timeAgo(q.completedAt)}</span>}
                       </li>
                     ))}

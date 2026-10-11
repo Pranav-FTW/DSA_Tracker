@@ -14,27 +14,37 @@ export const useTracker = () => useContext(TrackerContext);
 export function TrackerProvider({ children }) {
   const { user } = useAuth();
   const toast = useToast();
-  const [questions, setQuestions] = useState([]);
+  const [allQuestions, setAll] = useState([]); // every question from every sheet
+  const [sheets, setSheets] = useState([]);
+  const [sheetId, setSheetId] = useState(() => {
+    try {
+      return localStorage.getItem('dsa-sheet') || 'main';
+    } catch {
+      return 'main';
+    }
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     if (!user) {
-      setQuestions([]);
+      setAll([]);
+      setSheets([]);
       return;
     }
     setLoading(true);
     api
       .get('/tracker')
       .then((r) => {
-        setQuestions(r.data.questions);
+        setAll(r.data.questions);
+        setSheets(r.data.sheets || []);
         setError('');
       })
       .catch((e) => setError(errorMessage(e, 'Could not load your tracker.')))
       .finally(() => setLoading(false));
   }, [user]);
 
-  const patch = useCallback((id, changes) => setQuestions((qs) => qs.map((q) => (q._id === id ? { ...q, ...changes } : q))), []);
+  const patch = useCallback((id, changes) => setAll((qs) => qs.map((q) => (q._id === id ? { ...q, ...changes } : q))), []);
 
   // Optimistic: the tick shows everywhere immediately, and rolls back if the server rejects it.
   const toggleDone = useCallback(
@@ -110,9 +120,33 @@ export function TrackerProvider({ children }) {
     [patch, toast]
   );
 
+  // The sheet the user is following. `questions` (and everything computed from it) only covers that sheet,
+  // so the Dashboard, Tracker and Friends pages never mix two sheets together.
+  const sheet = sheets.find((s) => s.id === sheetId) || sheets[0] || null;
+  const activeId = sheet?.id || sheetId;
+  const questions = useMemo(() => allQuestions.filter((q) => (q.sheet || 'main') === activeId), [allQuestions, activeId]);
+  const setSheet = useCallback((id) => {
+    setSheetId(id);
+    try {
+      localStorage.setItem('dsa-sheet', id);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+  const sheetProgress = useMemo(() => {
+    const m = {};
+    allQuestions.forEach((q) => {
+      const k = q.sheet || 'main';
+      m[k] = m[k] || { done: 0, total: 0 };
+      m[k].total++;
+      if (q.done) m[k].done++;
+    });
+    return m;
+  }, [allQuestions]);
+
   const stats = useMemo(() => computeStats(questions), [questions]);
 
   return (
-    <TrackerContext.Provider value={{ questions, stats, loading, error, toggleDone, saveNote, setImageCount, toggleRevisit, reviewQuestion }}>{children}</TrackerContext.Provider>
+    <TrackerContext.Provider value={{ questions, allQuestions, sheets, sheet, sheetId: activeId, setSheet, sheetProgress, stats, loading, error, toggleDone, saveNote, setImageCount, toggleRevisit, reviewQuestion }}>{children}</TrackerContext.Provider>
   );
 }

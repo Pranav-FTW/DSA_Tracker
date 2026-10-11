@@ -2,12 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api, { errorMessage } from '../api';
 import { useToast } from '../context/ToastContext';
+import { useTracker } from '../context/TrackerContext';
 import { Bar } from '../components/Progress';
 import { IconSearch, IconUserPlus, IconCheck, IconX } from '../components/Icons';
 import { pct, timeAgo } from '../utils/stats';
 
 export default function Friends() {
   const toast = useToast();
+  const { sheet, sheetId } = useTracker();
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [q, setQ] = useState('');
@@ -17,10 +19,10 @@ export default function Friends() {
   const load = useCallback(
     () =>
       api
-        .get('/friends')
+        .get('/friends', { params: { sheet: sheetId } })
         .then((r) => setData(r.data))
         .catch((e) => setError(errorMessage(e))),
-    []
+    [sheetId]
   );
   useEffect(() => {
     load();
@@ -134,7 +136,7 @@ export default function Friends() {
       )}
 
       <section className="card">
-        <h3>Leaderboard</h3>
+        <h3>Leaderboard{sheet ? ` · ${sheet.short}` : ''}</h3>
         {data.friends.length === 0 ? (
           <p className="muted empty">No friends yet. Search for a username above to add your first one.</p>
         ) : (

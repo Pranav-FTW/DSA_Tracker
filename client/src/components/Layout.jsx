@@ -7,6 +7,7 @@ import { isDue } from '../utils/revise';
 import { pct } from '../utils/stats';
 import { Bar } from './Progress';
 import ThemeToggle from './ThemeToggle';
+import SheetSwitcher from './SheetSwitcher';
 import { IconHome, IconList, IconUsers, IconActivity, IconRepeat, IconLogout, IconCheck } from './Icons';
 
 const today = () => new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
@@ -14,8 +15,9 @@ const today = () => new Date().toLocaleDateString(undefined, { weekday: 'long', 
 export default function Layout() {
   const { user, logout } = useAuth();
   const { pathname } = useLocation();
-  const { questions, stats } = useTracker();
-  const dueCount = questions.filter(isDue).length; // questions to revise today
+  const { allQuestions, stats } = useTracker();
+  const dueCount = allQuestions.filter(isDue).length; // questions to revise today (all sheets)
+  const showSheets = pathname === '/' || pathname === '/tracker' || pathname.startsWith('/friends');
   const [pending, setPending] = useState(0);
   const [unread, setUnread] = useState(0); // unread cheers & nudges
 
@@ -99,6 +101,11 @@ export default function Layout() {
           </div>
         </header>
         <main className="main">
+          {showSheets && (
+            <div className="sheet-bar">
+              <SheetSwitcher />
+            </div>
+          )}
           <Outlet />
         </main>
       </div>

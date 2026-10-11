@@ -2,8 +2,10 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTracker } from '../context/TrackerContext';
-import { ProgressRing, Bar, CheckBox, SourceBadge } from '../components/Progress';
-import { pct, timeAgo } from '../utils/stats';
+import { ProgressRing, Bar, CheckBox } from '../components/Progress';
+import BreakdownCard from '../components/BreakdownCard';
+import QuestionBadge from '../components/QuestionBadge';
+import { isMultiSource, timeAgo } from '../utils/stats';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -18,6 +20,7 @@ export default function Dashboard() {
   if (loading) return <div className="boot">Loading your progress…</div>;
   if (error) return <div className="form-error">{error}</div>;
 
+  const multi = isMultiSource(stats);
   const remaining = stats.total - stats.completed;
   const finished = remaining === 0;
 
@@ -47,25 +50,7 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <section className="card">
-          <h3>By source list</h3>
-          <div className="source-list">
-            {[
-              ['NeetCode 150', stats.lists.neetcode, 'neetcode'],
-              ['Striver Master DSA', stats.lists.striver, 'striver'],
-              ['Shared by both', stats.bySource.Both, 'both'],
-            ].map(([label, s, tone]) => (
-              <div key={label} className="source-row">
-                <div className="row between">
-                  <span>{label}</span>
-                  <span className="muted small">{s.done} / {s.total} · {pct(s.done, s.total)}%</span>
-                </div>
-                <Bar done={s.done} total={s.total} tone={tone} />
-              </div>
-            ))}
-          </div>
-          <p className="muted small note-line">NeetCode and Striver totals include the shared questions, so they overlap.</p>
-        </section>
+        <BreakdownCard stats={stats} questions={questions} />
       </div>
 
       <div className="grid-two">
@@ -85,7 +70,7 @@ export default function Dashboard() {
                     <div className="q-title">{q.title}</div>
                     <div className="muted small">{q.pattern}</div>
                   </div>
-                  <SourceBadge source={q.source} />
+                  <QuestionBadge q={q} multi={multi} />
                 </li>
               ))}
             </ul>

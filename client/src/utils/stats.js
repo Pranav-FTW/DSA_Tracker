@@ -29,6 +29,9 @@ export function computeStats(questions) {
   };
 }
 
+// True when a sheet mixes several source lists (NeetCode / Striver / both). Single-list sheets like A2Z show difficulty instead.
+export const isMultiSource = (stats) => ['NeetCode', 'Striver', 'Both'].filter((k) => stats.bySource[k].total > 0).length > 1;
+
 export const pct = (done, total) => (total ? Math.round((done / total) * 100) : 0);
 
 export function timeAgo(date) {

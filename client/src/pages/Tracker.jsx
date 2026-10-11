@@ -2,7 +2,9 @@ import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTracker } from '../context/TrackerContext';
 import NoteModal from '../components/NoteModal';
-import { Bar, CheckBox, SourceBadge } from '../components/Progress';
+import { Bar, CheckBox } from '../components/Progress';
+import QuestionBadge from '../components/QuestionBadge';
+import { isMultiSource } from '../utils/stats';
 import { IconChevron, IconNote, IconRepeat, IconSearch } from '../components/Icons';
 import { dueLabel } from '../utils/revise';
 import { stripMarkdown, looksLikeMarkdown } from '../utils/markdown';
@@ -17,14 +19,18 @@ export default function Tracker() {
   const [collapsed, setCollapsed] = useState(() => new Set());
   const [noteFor, setNoteFor] = useState(null);
 
-  const pattern = params.get('pattern') || 'all';
+  const multi = isMultiSource(stats); // false for single-list sheets such as A2Z
+  const rawPattern = params.get('pattern') || 'all';
+  const pattern = stats.byPattern.some((p) => p.pattern === rawPattern) ? rawPattern : 'all'; // ignore a pattern from the other sheet
   const setPattern = (v) => (v === 'all' ? setParams({}) : setParams({ pattern: v }));
 
   const filtered = useMemo(() => {
     const s = search.trim().toLowerCase();
     return questions.filter((q) => {
       if (pattern !== 'all' && q.pattern !== pattern) return false;
-      if (source === 'neetcode' && q.source === 'Striver') return false;
+      if (!multi) {
+        /* single-list sheet: no source filter */
+      } else if (source === 'neetcode' && q.source === 'Striver') return false;
       if (source === 'striver' && q.source === 'NeetCode') return false;
       if (source === 'both' && q.source !== 'Both') return false;
       if (status === 'done' && !q.done) return false;
@@ -51,7 +57,7 @@ export default function Tracker() {
       return next;
     });
 
-  const filtersActive = pattern !== 'all' || source !== 'all' || status !== 'all' || search;
+  const filtersActive = pattern !== 'all' || (multi && source !== 'all') || status !== 'all' || search;
   const reset = () => {
     setSearch('');
     setSource('all');
@@ -87,12 +93,14 @@ export default function Tracker() {
             <option key={p.pattern} value={p.pattern}>{p.pattern}</option>
           ))}
         </select>
-        <select value={source} onChange={(e) => setSource(e.target.value)} aria-label="Source list">
-          <option value="all">All lists</option>
-          <option value="neetcode">NeetCode 150</option>
-          <option value="striver">Striver</option>
-          <option value="both">Shared by both</option>
-        </select>
+        {multi && (
+          <select value={source} onChange={(e) => setSource(e.target.value)} aria-label="Source list">
+            <option value="all">All lists</option>
+            <option value="neetcode">NeetCode 150</option>
+            <option value="striver">Striver</option>
+            <option value="both">Shared by both</option>
+          </select>
+        )}
         <select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Status">
           <option value="all">Any status</option>
           <option value="todo">Not solved</option>
@@ -127,7 +135,7 @@ export default function Tracker() {
                 {items.map((q) => (
                   <li key={q._id} className={`qrow ${q.done ? 'is-done' : ''}`}>
                     <CheckBox checked={q.done} onChange={() => toggleDone(q)} label={`Mark ${q.title} as ${q.done ? 'not solved' : 'solved'}`} />
-                    <span className="qnum">{q.number}</span>
+                    <span className="qnum">{q.sheetNumber ?? q.number}</span>
                     <div className="qmain">
                       <div className="q-title">{q.title}</div>
                       {q.info && <div className="muted small">{q.info}</div>}
@@ -140,7 +148,7 @@ export default function Tracker() {
                         </button>
                       )}
                     </div>
-                    <SourceBadge source={q.source} />
+                    <QuestionBadge q={q} multi={multi} />
                     <div className="qlinks">
                       {q.done && (
                         <>

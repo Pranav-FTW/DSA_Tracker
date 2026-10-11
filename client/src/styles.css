@@ -970,3 +970,15 @@ a.board-row:hover { background: var(--surface-2); }
 .link-ico.revise:hover { border-color: var(--accent); color: var(--accent); }
 .link-ico.revise.on { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
 .qsep { width: 1px; height: 20px; background: var(--line); margin: 0 2px; flex: none; }
+
+/* ---------- Sheet switcher + difficulty badges ---------- */
+.sheet-bar { max-width: 1080px; margin: 0 auto 18px; }
+.sheet-switch { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); max-width: 100%; overflow-x: auto; }
+.sheet-tab { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 0; border-radius: 10px; background: transparent; color: var(--muted); font-weight: 700; white-space: nowrap; }
+.sheet-tab:hover { color: var(--text); background: var(--surface-2); }
+.sheet-tab.active { background: var(--accent); color: var(--accent-ink); }
+.sheet-count { font-size: 12px; font-weight: 700; opacity: .8; }
+.badge.diff-easy { color: var(--done); border-color: var(--done); background: var(--done-soft); }
+.badge.diff-medium { color: var(--neet); border-color: var(--neet-line); background: var(--neet-soft); }
+.badge.diff-hard { color: var(--danger); border-color: var(--danger-line); background: var(--danger-soft); }
+.tone-hard { background: var(--danger); }

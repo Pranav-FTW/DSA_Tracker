@@ -4,7 +4,7 @@ import { IconCode, IconPlay } from './Icons';
 const META = {
   leetcode: { label: 'LeetCode', tip: 'Open on LeetCode', cls: 'lc' },
   neetcode: { label: 'NeetCode', tip: 'Open on NeetCode', cls: 'nc' },
-  striver: { label: 'Striver', tip: 'Open Striver sheet', cls: 'sv' },
+  striver: { label: 'Striver', tip: "Open Striver's page", cls: 'sv' },
   youtube: { label: 'Video', tip: 'Watch video explanation', cls: 'yt' },
 };
 const ORDER = ['leetcode', 'neetcode', 'striver', 'youtube'];
