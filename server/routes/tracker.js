@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Question = require('../models/Question');
 const Progress = require('../models/Progress');
 const NoteImage = require('../models/NoteImage');
+const SHEETS = require('../data/sheets');
 const auth = require('../middleware/auth');
 
 const router = express.Router();
@@ -49,6 +50,7 @@ router.get('/', async (req, res, next) => {
           nextReviewAt: p?.nextReviewAt || null,
         };
       }),
+      sheets: SHEETS.map((sh) => ({ ...sh, total: questions.filter((q) => (q.sheet || 'main') === sh.id).length })),
     });
   } catch (err) {
     next(err);

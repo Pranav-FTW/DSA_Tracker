@@ -6,11 +6,17 @@ const Progress = require('../models/Progress');
 const Friendship = require('../models/Friendship');
 const auth = require('../middleware/auth');
 const buildStats = require('../utils/stats');
+const SHEETS = require('../data/sheets');
 
 const router = express.Router();
 router.use(auth);
 
 const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+// ?sheet=a2z picks which sheet the numbers are about. Defaults to the first (main) sheet.
+const sheetOf = (req) => {
+  const id = String(req.query.sheet || SHEETS[0].id);
+  return SHEETS.some((s) => s.id === id) ? id : null;
+};
 const otherId = (f, me) => (String(f.requester) === String(me) ? f.recipient : f.requester);
 
 async function findFriendship(a, b) {
@@ -60,6 +66,9 @@ router.get('/search', async (req, res, next) => {
 router.get('/', async (req, res, next) => {
   try {
     const me = req.user._id;
+    const sheet = sheetOf(req);
+    if (!sheet) return res.status(400).json({ message: 'Unknown sheet.' });
+    const sheetQuestionIds = await Question.find({ sheet }).distinct('_id');
     const all = await Friendship.find({ $or: [{ requester: me }, { recipient: me }] })
       .populate('requester recipient', 'username')
       .lean();
@@ -67,10 +76,10 @@ router.get('/', async (req, res, next) => {
     const accepted = all.filter((f) => f.status === 'accepted');
     const friendUserIds = accepted.map((f) => otherId({ requester: f.requester._id, recipient: f.recipient._id }, me));
 
-    const [total, agg] = await Promise.all([
-      Question.countDocuments(),
+    const total = sheetQuestionIds.length;
+    const [agg] = await Promise.all([
       Progress.aggregate([
-        { $match: { user: { $in: [...friendUserIds, me] }, done: true } },
+        { $match: { user: { $in: [...friendUserIds, me] }, done: true, question: { $in: sheetQuestionIds } } },
         { $group: { _id: '$user', completed: { $sum: 1 }, lastSolvedAt: { $max: '$completedAt' } } },
       ]),
     ]);
@@ -163,8 +172,11 @@ router.get('/:username/progress', async (req, res, next) => {
     const f = await findFriendship(req.user._id, friend._id);
     if (!f || f.status !== 'accepted') return res.status(403).json({ message: 'You can only view progress of your friends.' });
 
+    const sheet = sheetOf(req);
+    if (!sheet) return res.status(400).json({ message: 'Unknown sheet.' });
+
     const [questions, progress] = await Promise.all([
-      Question.find().sort({ number: 1 }).select('number pattern title source').lean(),
+      Question.find({ sheet }).sort({ number: 1 }).select('number sheetNumber pattern title source difficulty').lean(),
       Progress.find({ user: friend._id, done: true }).select('question completedAt').lean(),
     ]);
     const doneMap = new Map(progress.map((p) => [String(p.question), p.completedAt]));

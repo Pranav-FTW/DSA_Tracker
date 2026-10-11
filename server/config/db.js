@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Question = require('../models/Question');
 const seedQuestions = require('../scripts/seedQuestions');
-const questions = require('../data/questions.json');
+const questions = require('../data/allQuestions');
 
 // The connection is cached on `global` so serverless invocations (Vercel) reuse it
 // instead of opening a new one on every request.
@@ -22,7 +22,7 @@ async function connect() {
   }
   await cached.promise;
 
-  // Load the question list the first time (or when new questions were added to questions.json).
+  // Load the question list the first time (or when a new sheet / new questions were added to the data files).
   if (!cached.ready) {
     const count = await Question.estimatedDocumentCount();
     if (count < questions.length) await seedQuestions();

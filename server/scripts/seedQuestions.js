@@ -1,5 +1,5 @@
 const Question = require('../models/Question');
-const questions = require('../data/questions.json');
+const questions = require('../data/allQuestions');
 
 // Upserts by question number, so it is safe to run on every start and keeps user progress intact.
 module.exports = async function seedQuestions() {
